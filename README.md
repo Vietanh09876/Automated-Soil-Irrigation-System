@@ -1,4 +1,4 @@
-* Automated Soil Irrigation System
+# Automated Soil Irrigation System
 Function:Sprinkler
 - Moisture sensor, adc converter: 2
 - Leds, independent Control of different zone (use chips to expand io ports)
