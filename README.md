@@ -7,3 +7,13 @@ Function:Sprinkler
 - pipes: 3
 - Zone visual showing different area
 - maybe use esp32 as adc and wireless communication
+
+## Sensor Functions:
+- Check every 5 minutes
+- 30 Latest datas are logged
+- After pump is on, if after 3 checks with no significant changes, flag pump failure
+
+## UI functions:
+- Start, shutdown and timelapse of pump working
+- Ez to look at
+
