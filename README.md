@@ -15,5 +15,5 @@ Function:Sprinkler
 
 ## UI functions:
 - Start, shutdown and timelapse of pump working
-- Ez to look at
+- Ez to look at ??
 
