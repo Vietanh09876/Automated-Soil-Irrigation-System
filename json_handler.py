@@ -18,6 +18,6 @@ def readjson_moisture():
         
     return dictionary
 
-writejson_moisture({"field 1": 100, "field 2": 200, "field 3": 300})
+# writejson_moisture({"field 1": 100, "field 2": 200, "field 3": 300})
 
-print(readjson_moisture())
+# print(readjson_moisture())
