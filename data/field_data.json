@@ -1,6 +1,7 @@
 {
   "field moisture": {
-    "field 1": 600,
-    "field 2": 700
+    "field 1": 100,
+    "field 2": 200,
+    "field 3": 300
   }
 }

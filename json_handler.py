@@ -1,26 +1,23 @@
 import json
 
-def writejson_moisture(field_1: int, field_2:int):
+def writejson_moisture(dictionary: dict = {"field 1": 100, "field 2": 100}):
+
     with open("data/field_data.json", "w") as file:
         data = {
-            "field moisture": 
-                {
-                "field 1": field_1,
-                "field 2": field_2
-                }
+            "field moisture": dictionary
         }
 
-        json.dump(data, file, indent=2)
+        json.dump(data, file, indent=2, sort_keys=True)
     return
 
-def readjson():
+def readjson_moisture():
+    dictionary = dict()
     with open("data/field_data.json", "r") as file:
         data = json.load(file)
-    return data
+        dictionary = data["field moisture"]
+        
+    return dictionary
 
-writejson_moisture(600,700)
-getdata = readjson()
-print(getdata["field moisture"]["field 1"])
-# getdata = readjson()
+writejson_moisture({"field 1": 100, "field 2": 200, "field 3": 300})
 
-# print(getdata["field moisture"][0])
+print(readjson_moisture())
