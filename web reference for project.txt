@@ -1,0 +1,5 @@
+https://mohamedelhlafi.medium.com/use-the-mqtt-protocol-to-communicate-data-between-2-raspberry-pi-3d432dea9313
+https://vulabs.dev/posts/raspberry_pi_hotspot/
+https://dev.to/andreamancuso/setting-up-a-wi-fi-access-point-on-raspberry-pi-with-5-ghz-and-client-mode-5a56
+https://python.land/virtual-environments/virtualenv
+https://newbiely.com/tutorials/raspberry-pi/raspberry-pi-soil-moisture-sensor
