@@ -22,26 +22,34 @@ spi.xfer2([leds])
 
 #Create plain gui
 gui = tk.Tk()
-gui.title("Gui demo")
+gui.title("Automate Soil Irrigation")
+window_width = 400
+window_height = 800
 
 def checkmoisture():
     return
 
 def configHMI():
     
-    
     #Add image
-    image = tk.PhotoImage(file="ATU-Logo.png")
+    myimage = tk.PhotoImage(file="ATU-Logo.png")
 
     #Config window size and bg colour
-    tools_frame = tk.Frame(gui, width=200, height=400, bg="skyblue")
+    tools_frame = tk.Frame(gui, width=window_width, height=window_height, bg="skyblue")
     tools_frame.grid(row=0, column=0)
     
-    #Display image
-    tk.Label(tools_frame, bg="skyblue").grid(row=0, column=0)
-    thumbnail_image = image.subsample(5,5) #resize image
-    tk.Label(tools_frame, image=thumbnail_image).grid(row=0, column=0)
+    #Picture frame
+    pictures_frame = tk.Frame(tools_frame, width=window_width, height=window_height/2, bg="skyblue")
+    pictures_frame.grid(row=0, column=0)
 
+    #Display image to picture frame
+    tk.Label(pictures_frame, bg="skyblue").grid(row=0, column=0)
+    thumbnail_image = myimage.subsample(5,5) #resize image
+    tk.Label(pictures_frame, image=thumbnail_image).grid(row=0, column=0)
+    tk.Label(pictures_frame, image=thumbnail_image).grid(row=0, column=1)
+
+    
+    
     #Create tab layout
     notebook = ttk.Notebook(tools_frame)
     notebook.grid(row=1, column=0)
