@@ -1,0 +1,3 @@
+import ADS1x15
+
+ADS = ADS1x15.ADS
