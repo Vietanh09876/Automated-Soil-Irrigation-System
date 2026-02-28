@@ -8,7 +8,8 @@ import datetime
 import json_handler
 
 #Motor config
-motor_1 = Motor(forward=2, backward=3)
+motor_1 = Motor(forward=6, backward=13)
+motor_2 = Motor(forward=19, backward=26)
 
 #SPI config
 spi= spidev.SpiDev()
