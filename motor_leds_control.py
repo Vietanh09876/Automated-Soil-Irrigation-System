@@ -7,6 +7,7 @@ import time
 import datetime
 import json_handler
 
+
 #Motor config
 motor_1 = Motor(forward=6, backward=13)
 motor_2 = Motor(forward=19, backward=26)
@@ -16,6 +17,8 @@ spi= spidev.SpiDev()
 spi.open(bus=0,device=0)
 spi.max_speed_hz = 500000 #refer to minimum clock high duration
 spi.mode = 0
+
+#LEDS settings
 leds = 0b0000 #LEDS setting read from right to left
 leds_off = 0b0000 #Turn off all leds
 print(format(leds, "04b"))
@@ -78,7 +81,7 @@ def configHMI():
     
 
 configHMI()
-gui.mainloop()
+# gui.mainloop()
 
 # while True:
 #     motor_1.forward(speed=1)
