@@ -9,8 +9,8 @@ from adafruit_ads1x15.analog_in import AnalogIn
 i2c = busio.I2C(board.SCL, board.SDA)
 
 # Output voltage signal: 0~4.2v
-# 0 ~300 : dry soil
-# 300~700 : humid soil
+# 0 ~500 : dry soil
+# 500~700 : humid soil
 # 700~950 : in water
 
 volt_to_value = 950/4.2
