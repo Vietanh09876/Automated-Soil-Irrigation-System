@@ -36,29 +36,27 @@ window_height = 800
 
 def leds_on(led_no: int):
     global leds, spi
-    bit_no = led_no - 1
-    leds |= (1 << bit_no)
+    leds |= (1 << led_no)
     print(format(leds, "04b"))
     spi.xfer2([leds])
     return
 
 def leds_off(led_no: int):
     global leds, spi
-    bit_no = led_no - 1
-    leds &= ~(1 << bit_no)
+    leds &= ~(1 << led_no)
     print(format(leds, "04b"))
     spi.xfer2([leds])
     return
 
 def motor_on(motor_no: int):
     global motor_on_num ,motor_list
-    motor_list[motor_no-1].forward(speed=0.25)
-    motor_on_num[motor_no-1] += 1
+    motor_list[motor_no].forward(speed=0.25)
+    motor_on_num[motor_no] += 1
     return
 
 def motor_off(motor_no: int):
     global motor_list
-    motor_list[motor_no-1].stop()
+    motor_list[motor_no].stop()
     return
 
 
@@ -66,14 +64,23 @@ def checkmoisture():
     global motor_list
     field_data, timestamp, day = json_handler.readjson_moisture()
     list_of_moist = []
+    spacing_green = 1
+    spacing_red = 0
     for i in range(len(field_data)):
         dictkey = f"field {i+1}"
         list_of_moist.append(field_data[dictkey])
     
     for moist in range(len(list_of_moist)):
         if list_of_moist[moist] < 300:
-            motor_on(moist+1)
-    
+            leds_off(moist+spacing_red)
+            leds_on(moist+spacing_green)
+            spacing_green += 1
+            spacing_red += 1
+        else:
+            leds_off(moist+spacing_red)
+            leds_on(moist+spacing_green)
+            spacing_green += 1
+            spacing_red += 1
     return
 
 def configHMI():
@@ -128,7 +135,8 @@ def configHMI():
 
 
 while True:
-    checkmoisture()
+#     checkmoisture()
+
     time.sleep(3)
 
     
