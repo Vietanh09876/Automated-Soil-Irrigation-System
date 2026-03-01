@@ -34,16 +34,27 @@ gui.title("Automate Soil Irrigation")
 window_width = 400
 window_height = 800
 
-def leds_on(led_no: int):
+# def leds_on(led_no: int):
+#     global leds, spi
+#     leds |= (1 << led_no)
+#     print(format(leds, "04b"))
+#     spi.xfer2([leds])
+#     return
+
+def turnled_on(field_no: int, led_no: int):
     global leds, spi
-    leds |= (1 << led_no)
+    #each field has 2 leds, red = 0, green = 1
+    bit_no = field_no*2 + led_no 
+    leds |= (1 << bit_no)
     print(format(leds, "04b"))
     spi.xfer2([leds])
     return
 
-def leds_off(led_no: int):
+def turnled_off(field_no: int, led_no: int):
     global leds, spi
-    leds &= ~(1 << led_no)
+    #each field has 2 leds, red = 0, green = 1
+    bit_no = field_no*2 + led_no
+    leds &= ~(1 << bit_no)
     print(format(leds, "04b"))
     spi.xfer2([leds])
     return
@@ -64,23 +75,18 @@ def checkmoisture():
     global motor_list
     field_data, timestamp, day = json_handler.readjson_moisture()
     list_of_moist = []
-    spacing_green = 1
-    spacing_red = 0
+
     for i in range(len(field_data)):
         dictkey = f"field {i+1}"
         list_of_moist.append(field_data[dictkey])
     
     for moist in range(len(list_of_moist)):
         if list_of_moist[moist] < 300:
-            leds_off(moist+spacing_red)
-            leds_on(moist+spacing_green)
-            spacing_green += 1
-            spacing_red += 1
+            turnled_on(moist, 1)
+            turnled_off(moist, 0)
         else:
-            leds_off(moist+spacing_green)
-            leds_on(moist+spacing_red)
-            spacing_green += 1
-            spacing_red += 1
+            turnled_on(moist, 0)
+            turnled_off(moist, 1)
     return
 
 def configHMI():
