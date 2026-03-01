@@ -7,6 +7,9 @@ import time
 import datetime
 import json_handler
 
+#Get current day and time
+current_day = datetime.datetime
+current_time = datetime.datetime
 
 #Motor config
 motor_1 = Motor(forward=6, backward=13)
