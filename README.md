@@ -3,6 +3,7 @@ Components:Sprinkler
 - Moisture sensor: 2
 - ADS1115 analog to digital converter: 1
 - Leds: 2 red, 2 green
+- SN74HC595N shift register: 1
 - L293D motor controller: 1
 - motors pumps 6v: 2
 - PVC pipes: 4
