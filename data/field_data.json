@@ -1,8 +1,8 @@
 {
-  "day": "1",
+  "day": "False",
   "field moisture": {
-    "field 1": 221.45877775234607,
-    "field 2": 72.38347447928588
+    "field 1": 400,
+    "field 2": 200
   },
-  "timestamp": "00:36:40.227147"
+  "timestamp": "False"
 }

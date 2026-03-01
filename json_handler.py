@@ -28,6 +28,6 @@ def readjson_moisture():
     
     return dictionary, timestamp, day
 
-# writejson_moisture({"field 1": 100, "field 2": 200, "field 3": 300})
+writejson_moisture({"field 1": 400, "field 2": 200})
 # a,b,c = readjson_moisture()
 # print(b)

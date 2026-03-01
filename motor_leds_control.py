@@ -77,8 +77,8 @@ def checkmoisture():
             spacing_green += 1
             spacing_red += 1
         else:
-            leds_off(moist+spacing_red)
-            leds_on(moist+spacing_green)
+            leds_off(moist+spacing_green)
+            leds_on(moist+spacing_red)
             spacing_green += 1
             spacing_red += 1
     return
@@ -135,7 +135,7 @@ def configHMI():
 
 
 while True:
-#     checkmoisture()
+    checkmoisture()
 
     time.sleep(3)
 
