@@ -61,6 +61,13 @@ def motor_off(motor_no: int):
 
 
 def checkmoisture():
+    data, timestamp, day = json_handler.readjson_moisture()
+    list_of_moist = []
+    for i in range(len(data)):
+        dictkey = f"field {i+1}"
+        list_of_moist.append(data[dictkey])
+    
+    
     return
 
 def configHMI():
@@ -114,7 +121,8 @@ def configHMI():
 # gui.mainloop()
 
 
-# while True:
-#     print("ok")
+while True:
+    checkmoisture()
+    time.sleep(3)
 
     
