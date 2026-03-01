@@ -14,6 +14,7 @@ current_time = datetime.datetime
 #Motor config
 motor_1 = Motor(forward=5, backward=6)
 motor_2 = Motor(forward=13, backward=26)
+motor_list = [motor_1, motor_2]
 
 #SPI config
 spi= spidev.SpiDev()
@@ -24,7 +25,6 @@ spi.mode = 0
 #LEDS settings
 leds = 0b0000 #LEDS setting read from right to left
 leds_off = 0b0000 #Turn off all leds
-print(format(leds, "04b"))
 spi.xfer2([leds_off])
 
 #Create plain gui
@@ -32,6 +32,33 @@ gui = tk.Tk()
 gui.title("Automate Soil Irrigation")
 window_width = 400
 window_height = 800
+
+def leds_on(led_no: int):
+    global leds, spi
+    bit_no = led_no - 1
+    leds |= (1 << bit_no)
+    print(format(leds, "04b"))
+    spi.xfer2([leds])
+    return
+
+def leds_off(led_no: int):
+    global leds, spi
+    bit_no = led_no - 1
+    leds &= ~(1 << bit_no)
+    print(format(leds, "04b"))
+    spi.xfer2([leds])
+    return
+
+def motor_on(motor_no: int):
+    global motor_list
+    motor_list[motor_no-1].forward(speed=0.25)
+    return
+
+def motor_off(motor_no: int):
+    global motor_list
+    motor_list[motor_no-1].stop()
+    return
+
 
 def checkmoisture():
     return
@@ -86,14 +113,8 @@ def configHMI():
 # configHMI()
 # gui.mainloop()
 
-while True:
-#     motor_1.forward(speed=0.25)
-#     time.sleep(2)
-#     motor_1.stop()
-#     time.sleep(1)
-#     motor_2.forward(speed=0.5)
-#     time.sleep(2)
-#     motor_2.stop()
-    print("ok")
+
+# while True:
+#     print("ok")
 
     
