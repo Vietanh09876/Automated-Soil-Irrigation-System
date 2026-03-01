@@ -1,15 +1,16 @@
 import time
 import board
+import busio
 import json_handler
 import datetime
 from adafruit_ads1x15 import ads1115, AnalogIn, ads1x15
 
 
 #Create i2c configuration
-i2c = board.I2C()
+i2c = busio.I2C(scl= board.SCL, sda= board.SDA)
 
 #config adc
-adc = ads1115.ADS1115(i2c)
+adc = ads1115.ADS1115(i2c, address=0x48)
 adc.gain = 1 #gain = 1 for voltage range of 4.096V by document
 
 #create soil sensor
@@ -35,5 +36,5 @@ while True:
     
     json_handler.writejson_moisture(dictionary= moist_dict, time=current_time, day=current_day)
     data,ctime,day = json_handler.readjson_moisture()
-    print(day)
+    print(data)
     time.sleep(2)

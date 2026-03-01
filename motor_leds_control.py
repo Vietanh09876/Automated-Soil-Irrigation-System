@@ -12,8 +12,8 @@ current_day = datetime.datetime
 current_time = datetime.datetime
 
 #Motor config
-motor_1 = Motor(forward=6, backward=13)
-motor_2 = Motor(forward=19, backward=26)
+motor_1 = Motor(forward=5, backward=6)
+motor_2 = Motor(forward=13, backward=26)
 
 #SPI config
 spi= spidev.SpiDev()
@@ -25,7 +25,7 @@ spi.mode = 0
 leds = 0b0000 #LEDS setting read from right to left
 leds_off = 0b0000 #Turn off all leds
 print(format(leds, "04b"))
-spi.xfer2([leds])
+spi.xfer2([leds_off])
 
 #Create plain gui
 gui = tk.Tk()
@@ -83,13 +83,17 @@ def configHMI():
     notebook.add(status_tab, text="Status")
     
 
-configHMI()
+# configHMI()
 # gui.mainloop()
 
-# while True:
-#     motor_1.forward(speed=1)
+while True:
+#     motor_1.forward(speed=0.25)
 #     time.sleep(2)
 #     motor_1.stop()
-#     print("ok")
+#     time.sleep(1)
+#     motor_2.forward(speed=0.5)
+#     time.sleep(2)
+#     motor_2.stop()
+    print("ok")
 
     
