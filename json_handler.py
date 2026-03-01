@@ -1,6 +1,6 @@
 import json
 
-def writejson_moisture(dictionary: dict = {"field 1": 2000, "field 2": 2000}, time: str = "false", day:str = "false"):
+def writejson_moisture(dictionary: dict = {"field 1": 2000, "field 2": 2000}, time: str = "False", day:str = "False"):
 
     with open("data/field_data.json", "w") as file:
         data = {

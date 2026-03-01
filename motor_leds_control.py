@@ -14,6 +14,7 @@ current_time = datetime.datetime
 #Motor config
 motor_1 = Motor(forward=5, backward=6)
 motor_2 = Motor(forward=13, backward=26)
+motor_on_num = [0, 0] #number of time a motor is turned on in the day, reset each day
 motor_list = [motor_1, motor_2]
 
 #SPI config
@@ -50,8 +51,9 @@ def leds_off(led_no: int):
     return
 
 def motor_on(motor_no: int):
-    global motor_list
+    global motor_on_num ,motor_list
     motor_list[motor_no-1].forward(speed=0.25)
+    motor_on_num[motor_no-1] += 1
     return
 
 def motor_off(motor_no: int):
@@ -61,12 +63,16 @@ def motor_off(motor_no: int):
 
 
 def checkmoisture():
-    data, timestamp, day = json_handler.readjson_moisture()
+    global motor_list
+    field_data, timestamp, day = json_handler.readjson_moisture()
     list_of_moist = []
-    for i in range(len(data)):
+    for i in range(len(field_data)):
         dictkey = f"field {i+1}"
-        list_of_moist.append(data[dictkey])
+        list_of_moist.append(field_data[dictkey])
     
+    for moist in range(len(list_of_moist)):
+        if list_of_moist[moist] < 300:
+            motor_on(moist+1)
     
     return
 
