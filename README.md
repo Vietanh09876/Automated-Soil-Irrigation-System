@@ -1,18 +1,21 @@
 # Automated Soil Irrigation System
 Components:Sprinkler
-- Moisture sensor, adc converter: 2
-- Leds, independent Control of different zone (use chips to expand io ports)
-- Relays: 2
-- motors pumps (5v or 12v): 2
-- pipes: 3
+- Moisture sensor: 2
+- ADS1115 analog to digital converter: 1
+- Leds: 2 red, 2 green
+- L293D motor controller: 1
+- motors pumps 6v: 2
+- PVC pipes: 4
+- Non-polarized capacitor: 3
+- 220 ohms resistors: 4
 
 
 ## Sensor Functions:
 - Control LEDS through shift register
-- Control pump through L293D H-bridge
+- Control pump motor through L293D H-bridge
 - Check every ? minutes
-- After pump is on, if after 3 checks with no significant changes, flag pump failure or sensor failure ???
-- Fail safe if sensor fail ?? infinite pumping time ??
+- After pump is on, if after 3 checks with no significant changes from sensors, flag pump failure or sensor failure ???
+- Fail safe if sensor fail, have a timelapse for pump and counter of number of pump on
 - transfer json data through rsync
 
 ## UI functions:
