@@ -24,10 +24,10 @@ def readjson_moisture():
             day = data["day"]
     except:
         print("Can not retrieve data")
-        return
+        return False
     
-    return dictionary, timestamp, day
+    return True, dictionary, timestamp, day
 
-writejson_moisture({"field 1": 400, "field 2": 200})
+# writejson_moisture({"field 1": 200, "field 2": 500})
 # a,b,c = readjson_moisture()
 # print(b)

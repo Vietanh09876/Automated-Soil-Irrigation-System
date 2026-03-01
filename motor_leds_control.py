@@ -20,7 +20,7 @@ motor_list = [motor_1, motor_2]
 #SPI config
 spi= spidev.SpiDev()
 spi.open(bus=0,device=0)
-spi.max_speed_hz = 500000 #refer to minimum clock high duration
+spi.max_speed_hz = 500000 
 spi.mode = 0
 
 #LEDS settings
@@ -72,21 +72,22 @@ def motor_off(motor_no: int):
 
 
 def checkmoisture():
-    global motor_list
-    field_data, timestamp, day = json_handler.readjson_moisture()
+    global motor_list    
+    check, field_data, timestamp, day = json_handler.readjson_moisture()
     list_of_moist = []
+    if check:
+        for i in range(len(field_data)):
+            dictkey = f"field {i+1}"
+            list_of_moist.append(field_data[dictkey])
+        
+        for moist in range(len(list_of_moist)):
+            if list_of_moist[moist] < 300:
+                turnled_on(moist, 1)
+                turnled_off(moist, 0)
+            else:
+                turnled_on(moist, 0)
+                turnled_off(moist, 1)
 
-    for i in range(len(field_data)):
-        dictkey = f"field {i+1}"
-        list_of_moist.append(field_data[dictkey])
-    
-    for moist in range(len(list_of_moist)):
-        if list_of_moist[moist] < 300:
-            turnled_on(moist, 1)
-            turnled_off(moist, 0)
-        else:
-            turnled_on(moist, 0)
-            turnled_off(moist, 1)
     return
 
 def configHMI():
@@ -141,7 +142,7 @@ def configHMI():
 
 
 while True:
-    checkmoisture()
+#     checkmoisture()
 
     time.sleep(3)
 

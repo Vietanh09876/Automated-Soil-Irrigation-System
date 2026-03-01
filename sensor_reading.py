@@ -35,6 +35,7 @@ while True:
     current_time = str(datetime.datetime.now().time())
     
     json_handler.writejson_moisture(dictionary= moist_dict, time=current_time, day=current_day)
-    data,ctime,day = json_handler.readjson_moisture()
-    print(data)
+    
+    check, field_data, timestamp, day = json_handler.readjson_moisture()
+    print(field_data)
     time.sleep(2)
