@@ -14,8 +14,9 @@ current_time = datetime.datetime
 #Motor config
 motor_1 = Motor(forward=5, backward=6)
 motor_2 = Motor(forward=13, backward=26)
-motor_on_num = [0, 0] #number of time a motor is turned on in the day, reset each day
 motor_list = [motor_1, motor_2]
+motor_on_num = [0] * len(motor_list) #number of time a motor is turned on in the day, reset each day
+
 
 #SPI config
 spi= spidev.SpiDev()
@@ -34,12 +35,12 @@ gui.title("Automate Soil Irrigation")
 window_width = 400
 window_height = 800
 
-# def leds_on(led_no: int):
-#     global leds, spi
-#     leds |= (1 << led_no)
-#     print(format(leds, "04b"))
-#     spi.xfer2([leds])
-#     return
+#data varible
+data_check: bool = bool()
+fields_moisture = dict()
+timestamp = str()
+day = str()
+
 
 def turnled_on(field_no: int, led_no: int):
     global leds, spi
@@ -70,24 +71,45 @@ def motor_off(motor_no: int):
     motor_list[motor_no].stop()
     return
 
+def datahandling():
+    global data_check, fields_moisture, timestamp, day, motor_on_num, motor_list
+    
+    check, moistdata, stamp, dday = json_handler.readjson_moisture()
+    if check and stamp != timestamp: #to check if this is the same old data or not
+        if dday != day:
+            motor_on_num = [0] * len(motor_list) #reset motor on counter when next day pass
+            
+        data_check = check
+        fields_moisture = moistdata
+        timestamp = stamp
+        day = dday
+        return True
+    else:
+        return False 
 
-def checkmoisture():
-    global motor_list    
-    check, field_data, timestamp, day = json_handler.readjson_moisture()
+def main_controller():
+    global motor_list, fields_moisture
+    
+    if datahandling() == False:
+        return
+    
     list_of_moist = []
-    if check:
-        for i in range(len(field_data)):
-            dictkey = f"field {i+1}"
-            list_of_moist.append(field_data[dictkey])
+    for i in range(len(fields_moisture)):
+        dictkey = f"field {i+1}"
+        list_of_moist.append(fields_moisture[dictkey])
         
-        for moist in range(len(list_of_moist)):
-            if list_of_moist[moist] < 300:
-                turnled_on(moist, 1)
-                turnled_off(moist, 0)
+    for moist in range(len(list_of_moist)):
+        if list_of_moist[moist] < 300:
+            turnled_on(moist, 1)
+            turnled_off(moist, 0)
+            if motor_list[moist].is_active: #if pump is already on, dont call motor_on
+                continue
             else:
-                turnled_on(moist, 0)
-                turnled_off(moist, 1)
-
+                motor_on(moist)
+        else:
+            turnled_on(moist, 0)
+            turnled_off(moist, 1)
+            motor_off(moist)
     return
 
 def configHMI():
@@ -142,8 +164,7 @@ def configHMI():
 
 
 while True:
-#     checkmoisture()
-
+    main_controller()
     time.sleep(3)
 
     

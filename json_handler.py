@@ -13,21 +13,22 @@ def writejson_moisture(dictionary: dict = {"field 1": 2000, "field 2": 2000}, ti
     return
 
 def readjson_moisture():
-    dictionary = dict()
+    check = False 
+    fields_moisture = dict()
     timestamp = ""
     day = ""
     try:
         with open("data/field_data.json", "r") as file:
+            check = True 
             data = json.load(file)
-            dictionary = data["field moisture"]
+            fields_moisture = data["field moisture"]
             timestamp = data["timestamp"]
             day = data["day"]
     except:
         print("Can not retrieve data")
-        return False
     
-    return True, dictionary, timestamp, day
+    return check, fields_moisture, timestamp, day
 
 # writejson_moisture({"field 1": 200, "field 2": 500})
-# a,b,c = readjson_moisture()
-# print(b)
+# mylist = readjson_moisture()
+# print(mylist[0])
