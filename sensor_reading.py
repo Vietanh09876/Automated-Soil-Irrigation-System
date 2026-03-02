@@ -1,7 +1,7 @@
 import time
 import board
 import busio
-import json_handler
+import json_handler #Own written library
 import datetime
 from adafruit_ads1x15 import ads1115, AnalogIn, ads1x15
 
@@ -38,4 +38,4 @@ while True:
     
     check, field_data, timestamp, day = json_handler.readjson_moisture()
     print(field_data)
-    time.sleep(2)
+    time.sleep(5)

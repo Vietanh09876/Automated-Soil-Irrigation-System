@@ -17,6 +17,7 @@ def readjson_moisture():
     fields_moisture = dict()
     timestamp = ""
     day = ""
+    
     try:
         with open("data/field_data.json", "r") as file:
             check = True 

@@ -5,11 +5,9 @@ from gpiozero import Motor
 import spidev
 import time
 import datetime
-import json_handler
+import json_handler #Own written library
 
-#Get current day and time
-current_day = datetime.datetime
-current_time = datetime.datetime
+
 
 #Motor config
 motor_1 = Motor(forward=5, backward=6)
@@ -20,6 +18,7 @@ motor_on_num = [0] * len(motor_list) #number of time a motor is turned on in the
 
 #SPI config
 spi= spidev.SpiDev()
+#default spi gpio pins
 spi.open(bus=0,device=0)
 spi.max_speed_hz = 500000 
 spi.mode = 0
@@ -60,13 +59,13 @@ def turnled_off(field_no: int, led_no: int):
     spi.xfer2([leds])
     return
 
-def motor_on(motor_no: int):
+def turnmotor_on(motor_no: int):
     global motor_on_num ,motor_list
     motor_list[motor_no].forward(speed=0.25)
     motor_on_num[motor_no] += 1
     return
 
-def motor_off(motor_no: int):
+def turnmotor_off(motor_no: int):
     global motor_list
     motor_list[motor_no].stop()
     return
@@ -75,9 +74,13 @@ def datahandling():
     global data_check, fields_moisture, timestamp, day, motor_on_num, motor_list
     
     check, moistdata, stamp, dday = json_handler.readjson_moisture()
-    if check and stamp != timestamp: #to check if this is the same old data or not
+    
+    #check if data fetch successfully and if this is the same old data or not
+    if check and stamp != timestamp: 
+        
+        #reset number of motor on counter when next day pass
         if dday != day:
-            motor_on_num = [0] * len(motor_list) #reset motor on counter when next day pass
+            motor_on_num = [0] * len(motor_list) 
             
         data_check = check
         fields_moisture = moistdata
@@ -90,7 +93,8 @@ def datahandling():
 def main_controller():
     global motor_list, fields_moisture
     
-    if datahandling() == False:
+    #End function if fail to fetch data
+    if datahandling() == False: 
         return
     
     list_of_moist = []
@@ -102,14 +106,16 @@ def main_controller():
         if list_of_moist[moist] < 300:
             turnled_on(moist, 1)
             turnled_off(moist, 0)
-            if motor_list[moist].is_active: #if pump is already on, dont call motor_on
+            
+            #if pump is already on, dont call motor_on, go to next iteration
+            if motor_list[moist].is_active: 
                 continue
             else:
-                motor_on(moist)
+                turnmotor_on(moist)
         else:
             turnled_on(moist, 0)
             turnled_off(moist, 1)
-            motor_off(moist)
+            turnmotor_off(moist)
     return
 
 def configHMI():
