@@ -13,11 +13,12 @@
 
 
 ## Sensor Functions:
-- Control LEDS through shift register
-- Control pump motor through L293D H-bridge
-- Check every ? minutes
-- After pump is on, if after 3 checks with no significant changes from sensors, flag pump failure or sensor failure ???
-- Fail safe if sensor fail, have a timelapse for pump and counter of number of pump on
+- Control LEDS through shift register (Done)
+- Control pump motor through L293D H-bridge (Done)
+- Check moist using moist sensor, write data to a json file (Done)
+- Handle data to check if there is any data or data is new or old (Done)
+- Create number of pump is turned on counter, to check for sensor error (Done)
+- After pump is on, create timelapse to prevent pump running forever
 - transfer json data through rsync
 
 ## UI functions:

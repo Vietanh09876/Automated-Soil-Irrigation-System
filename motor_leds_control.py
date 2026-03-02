@@ -63,11 +63,13 @@ def turnmotor_on(motor_no: int):
     global motor_on_num ,motor_list
     motor_list[motor_no].forward(speed=0.25)
     motor_on_num[motor_no] += 1
+    print(f"Turn on motor {motor_no}")
     return
 
 def turnmotor_off(motor_no: int):
     global motor_list
     motor_list[motor_no].stop()
+    print(f"Turn off motor {motor_no}")
     return
 
 def datahandling():
@@ -170,7 +172,7 @@ def configHMI():
 
 
 while True:
-    main_controller()
+#     main_controller()
     time.sleep(3)
 
     
