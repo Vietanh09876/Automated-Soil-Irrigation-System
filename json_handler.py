@@ -10,6 +10,7 @@ def writejson_moisture(dictionary: dict = {"field 1": 2000, "field 2": 2000}, ti
         }
 
         json.dump(data, file, indent=2, sort_keys=True)
+        print("Write succeed")
     return
 
 def readjson_moisture():
@@ -25,6 +26,7 @@ def readjson_moisture():
             fields_moisture = data["field moisture"]
             timestamp = data["timestamp"]
             day = data["day"]
+            print("Read succeed")
     except:
         print("Can not retrieve data")
     
