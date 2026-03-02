@@ -1,6 +1,6 @@
 # Automated Soil Irrigation System
-##Use pip to install requiremnt.txt
-##Components:Sprinkler
+## Use pip to install requiremnt.txt
+## Components:Sprinkler
 - Moisture sensor: 2
 - ADS1115 analog to digital converter: 1
 - Leds: 2 red, 2 green
