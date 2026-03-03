@@ -220,7 +220,11 @@ def configHMI():
     #Display tab
     notebook.add(tools_tab, text="Command")
     notebook.add(status_tab, text="Status")
-    
+
+def checkbutton():
+    while True:
+        shutdownbutton.when_held = change_system_state
+
 def loop_maincontroller():
     global system_state, motor_list
     while True:
@@ -234,9 +238,7 @@ def loop_maincontroller():
             spi.xfer2([leds_off])
         time.sleep(2)
 
-def checkbutton():
-    while True:
-        shutdownbutton.when_held = change_system_state
+
         
 #Use threading to update data in the background of GUI
 thread_0 = threading.Thread(target=checkbutton, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
@@ -247,7 +249,7 @@ thread_1.start()
 configHMI()
 gui.mainloop()
 spi.xfer2([leds_off])
-#To shutdown all threads when windonw is closed
+#shutdown all threads when gui is closed
 sys.exit()
 
 
