@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from gpiozero import Motor
-from gpiozero import Button
+from gpiozero import Button as gpiobutton
 import spidev
 import time
 import datetime
@@ -13,7 +13,7 @@ import json_handler #Own written library
 
 #Button config
 system_state = True 
-shutdownbutton = Button(4)
+shutdownbutton = gpiobutton(4)
 shutdownbutton.hold_time = 5
 
 #Motor config
@@ -22,7 +22,7 @@ motor_2 = Motor(forward=13, backward=26)
 motor_list = [motor_1, motor_2]
 motor_on_num = [0] * len(motor_list) #number of time a motor is turned on in the day, reset each day
 motor_start_time = [0] * len(motor_list) #Record start time of motors
-motor_runtime = 10 #Allowed continous motor runtime in Secs, maybe set it 4 hours
+motor_runtime = 20 #Allowed continous motor runtime in Secs, maybe set it 4 hours
 motor_state = [True] * len(motor_list) #Activation motor for future use
 
 #SPI config
@@ -83,6 +83,7 @@ def turnmotor_off(motor_no: int):
     return
 
 def change_system_state():
+    global system_state
     if system_state == True:
         system_state = False
     else:
@@ -221,13 +222,16 @@ def configHMI():
     notebook.add(status_tab, text="Status")
     
 def loop_maincontroller():
+    global system_state, motor_list
     while True:
-        print(f"System state: {system_state})")
+        print(f"System state: {system_state}")
         if system_state: 
             main_controller()
-        else :
+        else:
+            #Turn all components off
+            for motor_no in range(len(motor_list)):
+                turnmotor_off(motor_no)
             spi.xfer2([leds_off])
-            
         time.sleep(2)
 
 def checkbutton():
@@ -237,7 +241,7 @@ def checkbutton():
 #Use threading to update data in the background of GUI
 thread_0 = threading.Thread(target=checkbutton, daemon=True)
 thread_1 = threading.Thread(target=loop_maincontroller, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
-# thread_0.start()
+thread_0.start()
 thread_1.start()
 
 configHMI()
