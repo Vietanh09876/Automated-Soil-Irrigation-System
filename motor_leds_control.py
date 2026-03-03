@@ -7,7 +7,7 @@ import time
 import datetime
 import subprocess
 import json_handler #Own written library
-
+import threading
 
 
 #Motor config
@@ -41,7 +41,7 @@ data_check: bool = bool()
 fields_moisture = dict()
 timestamp = str()
 day = str()
-
+list_of_moist_out = []
 
 def turnled_on(field_no: int, led_no: int):
     global leds, spi
@@ -108,6 +108,8 @@ def check_motor_runtime():
         if time_period > motor_runtime and motor_list[motor_no].is_active:
             turnmotor_off(motor_no)
             motor_state[motor_no] = False
+            turnled_on(motor_no, 0)
+            turnled_off(motor_no, 1)
             print(f"Inactivate motor {motor_no}")
 
 def activate_motor(motor_no: int):
@@ -128,7 +130,8 @@ def main_controller():
     for i in range(len(fields_moisture)):
         dictkey = f"field {i+1}"
         list_of_moist.append(fields_moisture[dictkey])
-    
+        
+    list_of_moist_out = list_of_moist
     #Control motor and leds based on moisture level    
     for field_no in range(len(list_of_moist)):
         print(f"Moist level {list_of_moist[field_no]}")
@@ -161,7 +164,7 @@ def main_controller():
 def configHMI():
     
     #Add image
-    myimage = tk.PhotoImage(file="ATU-Logo.png")
+    myimage = tk.PhotoImage(file="pictures/ATU-Logo.png")
 
     #Config window size and bg colour
     tools_frame = tk.Frame(gui, width=window_width, height=window_height, bg="skyblue")
@@ -186,16 +189,16 @@ def configHMI():
     #Create tab 1
     tools_tab = tk.Frame(notebook, bg="skyblue")
     #Add button to tab 1
-    green_button = Button(tools_tab, text="Green LED", bg="lightgrey", height=10, width=60, command=checkmoisture)
+    green_button = Button(tools_tab, text="Green LED", bg="lightgrey", height=10, width=60)
     green_button.grid(row=0, column=0)
-    red_button = Button(tools_tab, text="Red LED", bg="lightgrey", height=10, width=60, command=checkmoisture)
+    red_button = Button(tools_tab, text="Red LED", bg="lightgrey", height=10, width=60)
     red_button.grid(row=1, column=0)
 
     #Create tab 2
     status_tab = tk.Frame(notebook, bg="skyblue")
 
     #Add button to tab 2
-    distance_button = Button(status_tab, text="Read Distance", bg="lightgrey", height=10, width=60, command=checkmoisture)
+    distance_button = Button(status_tab, text="Read Distance", bg="lightgrey", height=10, width=60)
     distance_button.grid(row=0, column=0)
     text_box = Text(status_tab, height=10, width=50)
     text_box.grid(row=1, column=0,padx=3,pady=3)
@@ -204,13 +207,18 @@ def configHMI():
     notebook.add(tools_tab, text="Command")
     notebook.add(status_tab, text="Status")
     
+def loop_maincontroller():
+    while True:
+        main_controller()
+        time.sleep(2)
 
-# configHMI()
-# gui.mainloop()
+#Use threading to update data in the background of GUI
+thread_0 = threading.Thread(target=loop_maincontroller)
+thread_0.start()
+
+configHMI()
+gui.mainloop()
 
 
-while True:
-    main_controller()
-    time.sleep(2)
 
     
