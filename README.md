@@ -18,7 +18,7 @@
 - Check moist using moist sensor, write data to a json file (Done)
 - Handle data to check if there is any data or data is new or old (Done)
 - Create number of pump is turned on counter, to check for sensor error (Done)
-- After pump is on, create timelapse to prevent pump running forever
+- After pump is on, create timelapse to prevent pump running forever (Done)
 - transfer json data through rsync
 
 ## UI functions:

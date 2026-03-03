@@ -62,7 +62,7 @@ def turnled_off(field_no: int, led_no: int):
     return
 
 def turnmotor_on(motor_no: int):
-    global motor_on_num ,motor_list, motor_start_time, 
+    global motor_on_num ,motor_list, motor_start_time 
     motor_list[motor_no].forward(speed=0.25)
     motor_on_num[motor_no] += 1
     motor_start_time[motor_no] = time.time()
@@ -104,7 +104,7 @@ def check_motor_runtime():
         if time_period > motor_runtime and motor_list[motor_no].is_active:
             turnmotor_off(motor_no)
             motor_state[motor_no] = False
-            print(f"Inactivate motor {motor_no]")
+            print(f"Inactivate motor {motor_no}")
 
 def activate_motor(motor_no: int):
     motor_state[motor_no] = True
@@ -112,16 +112,12 @@ def activate_motor(motor_no: int):
 def main_controller():
     global motor_list, fields_moisture, motor_start_time, motor_runtime, motor_state
     
-    
-    #End function if fail to fetch data
-    if datahandling() == False:
-        spi.xfer2(leds_off)
-        for i in motor_list:
-            i.stop()
-        print("Halt everything")
-        return
-    
     check_motor_runtime()
+
+    #End function if fail to fetch data or old data
+    if datahandling() == False:
+        print("Old data")
+        return    
     
     #Add all moisture levels to a list
     list_of_moist = []
@@ -131,20 +127,29 @@ def main_controller():
     
     #Control motor and leds based on moisture level    
     for field_no in range(len(list_of_moist)):
+        print(f"Moist level {list_of_moist[field_no]}")
+        
         if list_of_moist[field_no] < 300:
-            turnled_on(field_no, 1)
-            turnled_off(field_no, 0)
-            
             #if pump is already on or it is shutdown by out of runtime, dont call turnmotor_on 
             if motor_state[field_no] == False or motor_list[field_no].is_active:
                 print(f"keep field {field_no} the way it is") 
                 continue 
             else:
                 turnmotor_on(field_no)
+                
+            if motor_list[field_no].is_active:
+                turnled_on(field_no, 1)
+                turnled_off(field_no, 0)
+            else:
+                turnled_on(field_no, 0)
+                turnled_off(field_no, 1)
+            
+            
         else:
+            turnmotor_off(field_no)
             turnled_on(field_no, 0)
             turnled_off(field_no, 1)
-            turnmotor_off(field_no)
+            
     return
 
 def configHMI():
