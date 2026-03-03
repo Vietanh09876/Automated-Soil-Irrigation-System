@@ -239,8 +239,8 @@ def checkbutton():
         shutdownbutton.when_held = change_system_state
         
 #Use threading to update data in the background of GUI
-thread_0 = threading.Thread(target=checkbutton, daemon=True)
-thread_1 = threading.Thread(target=loop_maincontroller, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
+thread_0 = threading.Thread(target=checkbutton, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
+thread_1 = threading.Thread(target=loop_maincontroller, daemon=True) 
 thread_0.start()
 thread_1.start()
 
