@@ -2,14 +2,19 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from gpiozero import Motor
+from gpiozero import Button
 import spidev
 import time
 import datetime
 import subprocess
 import sys
-import json_handler #Own written library
 import threading
+import json_handler #Own written library
 
+#Button config
+system_state = True 
+shutdownbutton = Button(4)
+shutdownbutton.hold_time = 5
 
 #Motor config
 motor_1 = Motor(forward=5, backward=6)
@@ -76,6 +81,13 @@ def turnmotor_off(motor_no: int):
     motor_start_time[motor_no] = 0
     print(f"Turn off motor {motor_no}")
     return
+
+def change_system_state():
+    if system_state == True:
+        system_state = False
+    else:
+        system_state = True
+    return 
 
 def rsync_remote_data():
     return 
@@ -210,12 +222,23 @@ def configHMI():
     
 def loop_maincontroller():
     while True:
-        main_controller()
+        print(f"System state: {system_state})")
+        if system_state: 
+            main_controller()
+        else :
+            spi.xfer2([leds_off])
+            
         time.sleep(2)
 
+def checkbutton():
+    while True:
+        shutdownbutton.when_held = change_system_state
+        
 #Use threading to update data in the background of GUI
-thread_0 = threading.Thread(target=loop_maincontroller, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
-thread_0.start()
+thread_0 = threading.Thread(target=checkbutton, daemon=True)
+thread_1 = threading.Thread(target=loop_maincontroller, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
+# thread_0.start()
+thread_1.start()
 
 configHMI()
 gui.mainloop()

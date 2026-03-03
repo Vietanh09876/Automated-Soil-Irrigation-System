@@ -1,6 +1,5 @@
 import json
 
-A = "ok"
 
 def writejson_moisture(dictionary: dict = {"field 1": 2000, "field 2": 2000}, time: str = "False", day:str = "False"):
 
