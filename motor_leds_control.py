@@ -5,6 +5,7 @@ from gpiozero import Motor
 import spidev
 import time
 import datetime
+import subprocess
 import json_handler #Own written library
 
 
@@ -74,6 +75,9 @@ def turnmotor_off(motor_no: int):
     motor_start_time[motor_no] = 0
     print(f"Turn off motor {motor_no}")
     return
+
+def rsync_remote_data():
+    return 
 
 def datahandling():
     global data_check, fields_moisture, timestamp, day, motor_on_num, motor_list
