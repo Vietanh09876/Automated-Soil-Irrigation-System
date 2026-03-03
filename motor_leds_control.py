@@ -219,6 +219,7 @@ thread_0.start()
 
 configHMI()
 gui.mainloop()
+spi.xfer2([leds_off])
 #To shutdown all threads when windonw is closed
 sys.exit()
 
