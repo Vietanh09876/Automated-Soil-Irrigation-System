@@ -133,6 +133,8 @@ def main_controller():
         if list_of_moist[field_no] < 300:
             #if pump is already on or it is shutdown by out of runtime, dont call turnmotor_on 
             if motor_state[field_no] == False or motor_list[field_no].is_active:
+                print(f"Motor state {motor_state[field_no]}")
+                print(f"Motor is active ? {motor_list[field_no].is_active}")
                 print(f"keep field {field_no} the way it is") 
                 continue 
             else:
@@ -206,6 +208,6 @@ def configHMI():
 
 while True:
 #     main_controller()
-    time.sleep(5)
+    time.sleep(2)
 
     
