@@ -6,6 +6,7 @@ import spidev
 import time
 import datetime
 import subprocess
+import sys
 import json_handler #Own written library
 import threading
 
@@ -213,12 +214,13 @@ def loop_maincontroller():
         time.sleep(2)
 
 #Use threading to update data in the background of GUI
-thread_0 = threading.Thread(target=loop_maincontroller)
+thread_0 = threading.Thread(target=loop_maincontroller, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
 thread_0.start()
 
 configHMI()
 gui.mainloop()
-
+#To shutdown all threads when windonw is closed
+sys.exit()
 
 
     
