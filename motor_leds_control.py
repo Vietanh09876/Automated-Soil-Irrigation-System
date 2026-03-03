@@ -20,8 +20,7 @@ motor_state = [True] * len(motor_list) #Activation motor for future use
 
 #SPI config
 spi= spidev.SpiDev()
-#default spi gpio pins
-spi.open(bus=0,device=0)
+spi.open(bus=0,device=0) #default spi gpio pins
 spi.max_speed_hz = 500000 
 spi.mode = 0
 
@@ -136,7 +135,7 @@ def main_controller():
                 print(f"Motor state {motor_state[field_no]}")
                 print(f"Motor is active ? {motor_list[field_no].is_active}")
                 print(f"keep field {field_no} the way it is") 
-                continue 
+                
             else:
                 turnmotor_on(field_no)
                 
@@ -207,7 +206,7 @@ def configHMI():
 
 
 while True:
-#     main_controller()
+    main_controller()
     time.sleep(2)
 
     
