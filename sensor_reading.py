@@ -28,7 +28,7 @@ scaledown = 1023/65535
 moist_dict: dict()
 
 while True:
-    moist_dict = {"field 1": moist_sens1.value*scaledown, "field 2": moist_sens2.value*scaledown}
+    moist_dict = {"field 1": round(moist_sens1.value*scaledown,1), "field 2": round(moist_sens2.value*scaledown,1)}
     
     #Get current day and time
     current_day = str(datetime.datetime.now().day)

@@ -92,6 +92,7 @@ def datahandling():
         fields_moisture = moistdata
         timestamp = stamp
         day = dday
+        print("New data")
         return True
     else:
         return False
