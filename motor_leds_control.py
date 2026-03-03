@@ -14,7 +14,9 @@ motor_1 = Motor(forward=5, backward=6)
 motor_2 = Motor(forward=13, backward=26)
 motor_list = [motor_1, motor_2]
 motor_on_num = [0] * len(motor_list) #number of time a motor is turned on in the day, reset each day
-
+motor_start_time = [0] * len(motor_list) #Record start time of motors
+motor_runtime = 10 #Allowed continous motor runtime in Secs, maybe set it 4 hours
+motor_state = [True] * len(motor_list) #Activation motor for future use
 
 #SPI config
 spi= spidev.SpiDev()
@@ -60,15 +62,17 @@ def turnled_off(field_no: int, led_no: int):
     return
 
 def turnmotor_on(motor_no: int):
-    global motor_on_num ,motor_list
+    global motor_on_num ,motor_list, motor_start_time, 
     motor_list[motor_no].forward(speed=0.25)
     motor_on_num[motor_no] += 1
+    motor_start_time[motor_no] = time.time()
     print(f"Turn on motor {motor_no}")
     return
 
 def turnmotor_off(motor_no: int):
-    global motor_list
+    global motor_list, motor_start_time
     motor_list[motor_no].stop()
+    motor_start_time[motor_no] = 0
     print(f"Turn off motor {motor_no}")
     return
 
@@ -77,10 +81,10 @@ def datahandling():
     
     check, moistdata, stamp, dday = json_handler.readjson_moisture()
     
-    #check if data fetch successfully and if this is the same old data or not
+    #check if data fetch successfully and if this is the same old data
     if check and stamp != timestamp: 
         
-        #reset number of motor on counter when next day pass
+        #reset "number of motor on" counter when next day pass
         if dday != day:
             motor_on_num = [0] * len(motor_list) 
             
@@ -90,34 +94,57 @@ def datahandling():
         day = dday
         return True
     else:
-        return False 
+        return False
+
+def check_motor_runtime():
+    global motor_list
+    for motor_no in range(len(motor_list)):
+        #How long a pump has been on
+        time_period = time.time() - motor_start_time[motor_no]
+        if time_period > motor_runtime and motor_list[motor_no].is_active:
+            turnmotor_off(motor_no)
+            motor_state[motor_no] = False
+            print(f"Inactivate motor {motor_no]")
+
+def activate_motor(motor_no: int):
+    motor_state[motor_no] = True
 
 def main_controller():
-    global motor_list, fields_moisture
+    global motor_list, fields_moisture, motor_start_time, motor_runtime, motor_state
+    
     
     #End function if fail to fetch data
-    if datahandling() == False: 
+    if datahandling() == False:
+        spi.xfer2(leds_off)
+        for i in motor_list:
+            i.stop()
+        print("Halt everything")
         return
     
+    check_motor_runtime()
+    
+    #Add all moisture levels to a list
     list_of_moist = []
     for i in range(len(fields_moisture)):
         dictkey = f"field {i+1}"
         list_of_moist.append(fields_moisture[dictkey])
-        
-    for moist in range(len(list_of_moist)):
-        if list_of_moist[moist] < 300:
-            turnled_on(moist, 1)
-            turnled_off(moist, 0)
+    
+    #Control motor and leds based on moisture level    
+    for field_no in range(len(list_of_moist)):
+        if list_of_moist[field_no] < 300:
+            turnled_on(field_no, 1)
+            turnled_off(field_no, 0)
             
-            #if pump is already on, dont call motor_on, go to next iteration
-            if motor_list[moist].is_active: 
-                continue
+            #if pump is already on or it is shutdown by out of runtime, dont call turnmotor_on 
+            if motor_state[field_no] == False or motor_list[field_no].is_active:
+                print(f"keep field {field_no} the way it is") 
+                continue 
             else:
-                turnmotor_on(moist)
+                turnmotor_on(field_no)
         else:
-            turnled_on(moist, 0)
-            turnled_off(moist, 1)
-            turnmotor_off(moist)
+            turnled_on(field_no, 0)
+            turnled_off(field_no, 1)
+            turnmotor_off(field_no)
     return
 
 def configHMI():
@@ -173,6 +200,6 @@ def configHMI():
 
 while True:
 #     main_controller()
-    time.sleep(3)
+    time.sleep(5)
 
     
