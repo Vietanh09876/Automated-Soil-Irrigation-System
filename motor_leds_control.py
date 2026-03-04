@@ -5,7 +5,6 @@ from gpiozero import Motor
 from gpiozero import Button as gpiobutton
 import spidev
 import time
-import datetime
 import subprocess
 import sys
 import threading
