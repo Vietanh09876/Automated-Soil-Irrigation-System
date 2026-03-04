@@ -16,13 +16,17 @@ system_state = True
 shutdownbutton = gpiobutton(4)
 shutdownbutton.hold_time = 5
 
+#rsync config
+rsync_command = ["rsync", "-avz", "-e", "ssh", "g00438053@florian.local:/home/g00438053/Desktop/Automated-Soil-Irrigation-System/data", "/home/vietanh09876/Documents/Programs/Automated Soil Irrigation System/data"]
+
+
 #Motor config
 motor_1 = Motor(forward=5, backward=6)
 motor_2 = Motor(forward=13, backward=26)
 motor_list = [motor_1, motor_2]
 motor_on_num = [0] * len(motor_list) #number of time a motor is turned on in the day, reset each day
 motor_start_time = [0] * len(motor_list) #Record start time of motors
-motor_runtime = 20 #Allowed continous motor runtime in Secs, maybe set it 4 hours
+motor_runtime = 30 #Allowed continous motor runtime in Secs, maybe set it 4 hours
 motor_state = [True] * len(motor_list) #Activation motor for future use
 
 #SPI config
@@ -91,11 +95,20 @@ def change_system_state():
         system_state = True
     return 
 
-def rsync_remote_data():
-    return 
 
 def datahandling():
-    global data_check, fields_moisture, timestamp, day, motor_on_num, motor_list
+    global data_check, fields_moisture, timestamp, day, motor_on_num, motor_list,rsync_command
+    
+    try:
+        subprocess.run(rsync_command,timeout= 5,check=True)
+        print("rsync successfully: ", Exception)
+    except subprocess.CalledProcessError:
+        print("rsync failed: ")
+        return False
+    except subprocess.TimeoutExpired:
+        print("rsync timed out")
+        return False
+    
     
     check, moistdata, stamp, dday = json_handler.readjson_moisture()
     
@@ -127,8 +140,7 @@ def check_motor_runtime():
             turnled_off(motor_no, 1)
             print(f"Inactivate motor {motor_no}")
 
-def activate_motor(motor_no: int):
-    motor_state[motor_no] = True
+
 
 def main_controller():
     global motor_list, fields_moisture, motor_start_time, motor_runtime, motor_state
@@ -137,7 +149,7 @@ def main_controller():
 
     #End function if fail to fetch data or old data
     if datahandling() == False:
-        print("Old data")
+        print("Error from data handling")
         return    
     
     #Add all moisture levels to a list
