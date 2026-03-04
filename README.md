@@ -10,6 +10,7 @@
 - PVC pipes: 4
 - Non-polarized capacitor: 3
 - 220 ohms resistors: 4
+- Button: 1
 
 
 ## Sensor Functions:
@@ -19,7 +20,7 @@
 - Handle data to check if there is any data or data is new or old (Done)
 - Create number of pump is turned on counter, to check for sensor error (Done)
 - After pump is on, create timelapse to prevent pump running forever (Done)
-- transfer json data through rsync
+- Transfer json data through rsync password-less using ssh key gen (Done)
 
 ## UI functions:
 - Start, shutdown and timelapse of pump working

@@ -13,7 +13,7 @@ import json_handler #Own written library
 
 #Button config
 system_state = True 
-shutdownbutton = gpiobutton(4)
+shutdownbutton = gpiobutton(4, pull_up=True)
 shutdownbutton.hold_time = 5
 
 #rsync config
@@ -234,6 +234,7 @@ def configHMI():
     notebook.add(status_tab, text="Status")
 
 def checkbutton():
+    #Shutdown or turn on whole system when button is hold for 5 secs
     while True:
         shutdownbutton.when_held = change_system_state
 
