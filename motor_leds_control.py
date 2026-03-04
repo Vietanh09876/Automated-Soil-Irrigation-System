@@ -26,7 +26,7 @@ motor_2 = Motor(forward=13, backward=26)
 motor_list = [motor_1, motor_2]
 motor_on_num = [0] * len(motor_list) #number of time a motor is turned on in the day, reset each day
 motor_start_time = [0] * len(motor_list) #Record start time of motors
-motor_runtime = 30 #Allowed continous motor runtime in Secs, maybe set it 4 hours
+motor_runtime = 300 #Allowed continous motor runtime in Secs, maybe set it 4 hours
 motor_state = [True] * len(motor_list) #Activation motor for future use
 
 #SPI config
