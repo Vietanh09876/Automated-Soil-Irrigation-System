@@ -17,7 +17,7 @@ shutdownbutton = gpiobutton(4)
 shutdownbutton.hold_time = 5
 
 #rsync config
-rsync_command = ["rsync", "-avz", "-e", "ssh", "g00438053@florian.local:/home/g00438053/Desktop/Automated-Soil-Irrigation-System/data", "/home/vietanh09876/Documents/Programs/Automated Soil Irrigation System/data"]
+rsync_command = ["rsync", "-avz", "-e", "ssh", "g00438053@florian.local:/home/g00438053/Desktop/Automated-Soil-Irrigation-System/data/field_data.json", "/home/vietanh09876/Documents/Programs/Automated Soil Irrigation System/data"]
 
 
 #Motor config
