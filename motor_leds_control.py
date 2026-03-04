@@ -101,14 +101,13 @@ def datahandling():
     
     try:
         subprocess.run(rsync_command,timeout= 5,check=True)
-        print("rsync successfully: ", Exception)
+        print("rsync successfully")
     except subprocess.CalledProcessError:
-        print("rsync failed: ")
+        print("rsync failed")
         return False
     except subprocess.TimeoutExpired:
         print("rsync timed out")
         return False
-    
     
     check, moistdata, stamp, dday = json_handler.readjson_moisture()
     
@@ -126,6 +125,7 @@ def datahandling():
         print("New data")
         return True
     else:
+        print("Old data")
         return False
 
 def check_motor_runtime():
@@ -149,7 +149,6 @@ def main_controller():
 
     #End function if fail to fetch data or old data
     if datahandling() == False:
-        print("Error from data handling")
         return    
     
     #Add all moisture levels to a list
