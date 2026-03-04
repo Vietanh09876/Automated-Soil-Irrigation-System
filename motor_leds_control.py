@@ -83,10 +83,11 @@ def turnmotor_off(motor_no: int):
     return
 
 def change_system_state():
-    global system_state
+    global system_state, motor_state, motor_list
     if system_state == True:
         system_state = False
     else:
+        motor_state = [True] * len(motor_list)
         system_state = True
     return 
 
