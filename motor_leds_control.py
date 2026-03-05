@@ -98,6 +98,7 @@ def change_system_state():
 def datahandling():
     global data_check, fields_moisture, timestamp, day, motor_on_num, motor_list,rsync_command
     
+    #If running with only 1 rasperry pi, comment out the subprocess block below, and run both this script and sensor_reading.py at the same time on 1 pi
     try:
         subprocess.run(rsync_command,timeout= 5,check=True)
         print("rsync successfully")
@@ -253,13 +254,14 @@ def loop_maincontroller():
 
         
 #Use threading to update data in the background of GUI
-thread_0 = threading.Thread(target=checkbutton, daemon=True) #daemon allows for thread to be shutdown whether or not is it still running
+thread_0 = threading.Thread(target=checkbutton, daemon=True) #daemon allows for a thread to be shutdown whether or not is it still running
 thread_1 = threading.Thread(target=loop_maincontroller, daemon=True) 
 thread_0.start()
 thread_1.start()
 
 configHMI()
 gui.mainloop()
+
 spi.xfer2([leds_off])
 #shutdown all threads when gui is closed
 sys.exit()
