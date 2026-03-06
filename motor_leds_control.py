@@ -143,7 +143,7 @@ def check_motor_runtime():
 
 
 def main_controller():
-    global motor_list, fields_moisture, motor_start_time, motor_runtime, motor_state
+    global motor_list, fields_moisture, motor_start_time, motor_runtime, motor_state, list_of_moist_out
     
     check_motor_runtime()
 
