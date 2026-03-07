@@ -25,7 +25,7 @@ moist_sens2 = AnalogIn(adc, ads1x15.Pin.A1)
 scaledown = 1023/65535
 
 #Dictionary of moisture data
-moist_dict: dict()
+moist_dict = dict()
 
 while True:
     moist_dict = {"field 1": round(moist_sens1.value*scaledown,1), "field 2": round(moist_sens2.value*scaledown,1)}
