@@ -35,8 +35,8 @@ spi.max_speed_hz = 500000
 spi.mode = 0
 
 #LEDS settings
-leds = 0b0000 #LEDS setting read from right to left
-leds_off = 0b0000 #Turn off all leds
+leds = 0b0000 #leds setting read from right to left
+leds_off = 0b0000 #leds setting for all leds off
 spi.xfer2([leds_off])
 
 #Create plain gui
