@@ -41,9 +41,8 @@ spi.xfer2([leds_off])
 
 #Create plain gui
 gui = tk.Tk()
-gui.title("Automate Soil Irrigation")
-window_width = 400
-window_height = 800
+gui.title("Irrigation System")
+gui.geometry("1000x800")
 
 #data varible
 data_check: bool = bool()
@@ -192,50 +191,213 @@ def main_controller():
     return
 
 def configHMI():
+    global system_state, motor_list, timestamp, day, list_of_moist_out
+    field1_img = tk.PhotoImage(file="pictures/cornfield2.png").subsample(2, 2)
+    field2_img = tk.PhotoImage(file="pictures/download2.png").subsample(1, 1)
+    atulogo = tk.PhotoImage(file="pictures/atulogo.png").subsample(5, 5)
+    irrigationimg= tk.PhotoImage(file="pictures/irrigationimg.png").subsample(3, 3)
+
+    mainframe = tk.Frame(gui, bg="green")
+    mainframe.pack(fill="both", expand=True)
+
+    notebook_frame = tk.Frame(mainframe, bg="green")
+    notebook_frame.pack(fill="both", expand=True, pady=10)
+
+    notebook = ttk.Notebook(notebook_frame)
+    notebook.pack(fill="both", expand=True)
+    pump1_state = tk.BooleanVar(value=False)
+    pump2_state = tk.BooleanVar(value=False)
+    pump_state = ""
+    pump_color = ""
+    pump_text = ""
+
+    if system_state == False:
+        pump_state = "normal"
+        pump_text = "Manual Override Pump OFF"
+        pump_color = "red"
+    else:
+        pump_state = "disabled"
+        pump_text = "Manual Override Unavailable"
+        pump_color = "grey"
+        
+
+    def toggle_pump1():
+        if pump1_state.get():
+            pump_button1.config(text="Manual Override Pump ON", bg="green")
+            turnmotor_on(0)
+            turnled_on(field_no=0, led_no=1)    
+            turnled_off(field_no=0, led_no=0)
+            print("Field 1 Pump ON")
+        else:
+            pump_button1.config(text="Manual Override Pump OFF", bg="red")
+            turnmotor_off(0)
+            turnled_on(field_no=0, led_no=0)
+            turnled_off(field_no=0, led_no=1)
+            print("Field 1 Pump OFF")
+
+    def toggle_pump2():
+        if pump2_state.get():
+            pump_button2.config(text="Manual Override Pump ON", bg="green")
+            turnmotor_on(1)
+            turnled_on(field_no=1, led_no=1)
+            turnled_off(field_no=1, led_no=0)
+            print("Field 2 Pump ON")
+        else:
+            pump_button2.config(text="Manual Override Pump OFF", bg="red")
+            turnmotor_off(1)
+            turnled_on(field_no=1, led_no=0)
+            turnled_off(field_no=1, led_no=1)
+            print("Field 2 Pump OFF")
+            
+            
+            
+
+
+    hometab = tk.Frame(notebook, bg="lightgreen")
+    notebook.add(hometab, text="Home")
+    hometext = tk.Text(hometab, height=3, width=55, font=("Arial", 18), bg="lightgreen")
+    hometext.pack(pady=5)
+    hometext.insert(tk.END, f"Welcome to the Automated Irrigation Sytem Interface")                         
+    hometext.config(state="disabled")
     
-    #Add image
-    myimage = tk.PhotoImage(file="pictures/ATU-Logo.png")
-
-    #Config window size and bg colour
-    tools_frame = tk.Frame(gui, width=window_width, height=window_height, bg="skyblue")
-    tools_frame.grid(row=0, column=0)
+    smalltext = tk.Text(hometab, height=3, width=65, font=("Arial", 18), bg="lightgreen")
+    smalltext.pack(pady=5)
+    smalltext.insert(tk.END, f"Field 1 tab will show you the soil moisture in field 1 along with the controls for a manual override pump, Field 2 tab will show you the soil moisture in field 2 along with the controls for a manual override pump")                         
+    smalltext.config(state="disabled")
     
-    #Picture frame
-    pictures_frame = tk.Frame(tools_frame, width=window_width, height=window_height/2, bg="skyblue")
-    pictures_frame.grid(row=0, column=0)
+    label3 = tk.Label(hometab, image=atulogo, bg="lightgreen")
+    label3.image = atulogo
+    label3.pack(pady=10)
+    label4 = tk.Label(hometab, image=irrigationimg, bg="lightgreen")
+    label4.image = irrigationimg
+    label4.pack(pady=15)
+          
+     
+    f1_tab = tk.Frame(notebook, bg="lightgreen")
+    notebook.add(f1_tab, text="Field 1")
 
-    #Display image to picture frame
-    tk.Label(pictures_frame, bg="skyblue").grid(row=0, column=0)
-    thumbnail_image = myimage.subsample(5,5) #resize image
-    tk.Label(pictures_frame, image=thumbnail_image).grid(row=0, column=0)
-    tk.Label(pictures_frame, image=thumbnail_image).grid(row=0, column=1)
+    label1 = tk.Label(f1_tab, image=field1_img, bg="lightgreen")
+    label1.image = field1_img
+    label1.pack(pady=10)
+
+    soil_text1 = tk.Text(f1_tab, height=3, width=40, font=("Arial", 14), bg="lightgreen")
+    soil_text1.pack(pady=5)
+    soil_text1.config(state="disabled")
+
+    timestamp1 = tk.Text(f1_tab, height=1, width=40, font=("Arial", 12), bg="lightgreen")
+    timestamp1.pack(pady=5)
+    timestamp1.config(state="disabled")
+    
+    pump_button1 = tk.Checkbutton(
+    f1_tab,
+    text=pump_text,
+    font=("Arial",14,"bold"),
+    bg=pump_color,
+    fg="white",
+    width=22,
+    height=4,
+    variable=motor_list[0].is_active,
+    command=toggle_pump1,
+    state=pump_state
+    )
+    pump_button1.pack(pady=15)
+
+    f2_tab = tk.Frame(notebook, bg="lightgreen")
+    notebook.add(f2_tab, text="Field 2")
+ 
+    label2 = tk.Label(f2_tab, image=field2_img, bg="lightgreen")
+    label2.image = field2_img
+    label2.pack(pady=10)
+
+    soil_text2 = tk.Text(f2_tab, height=3, width=40, font=("Arial", 14), bg="lightgreen")
+    soil_text2.pack(pady=5)
+    soil_text2.config(state="disabled")
+
+   
+    timestamp2 = tk.Text(f2_tab, height=1, width=40, font=("Arial", 12), bg="lightgreen")
+    timestamp2.pack(pady=5)
+    timestamp2.config(state="disabled")
+    pump_button2 = tk.Checkbutton(
+    f2_tab,
+    text=pump_text,
+    font=("Arial",14,"bold"),
+    bg=pump_color,
+    fg="white",
+    width=22,
+    height=4,
+    variable=pump2_state,
+    command=toggle_pump2,
+    state=pump_state
+    )
+    pump_button2.pack(pady=15)
 
     
+    def update_readings():
+        global pump_state, pump_text, pump_color
+        print("Update readings")
+        hmitimestamp = f"day: {day}, time: {timestamp}"
+        
+        soil_text1.config(state="normal")
+        soil_text1.delete("1.0", tk.END)
+        soil_text1.insert(tk.END, f"Soil Moisture: {list_of_moist_out[0]}")
+        soil_text1.config(state="disabled")
+
+        timestamp1.config(state="normal")
+        timestamp1.delete("1.0", tk.END)
+        timestamp1.insert(tk.END, f"Timestamp: {hmitimestamp}")
+        timestamp1.config(state="disabled")
+
+        
+        soil_text2.config(state="normal")
+        soil_text2.delete("1.0", tk.END)
+        soil_text2.insert(tk.END, f"Soil Moisture: {list_of_moist_out[1]}")
+        soil_text2.config(state="disabled")
+
+        timestamp2.config(state="normal")
+        timestamp2.delete("1.0", tk.END)
+        timestamp2.insert(tk.END, f"Timestamp: {hmitimestamp}")
+        timestamp2.config(state="disabled")
+        
+        if system_state == False and pump_state == "disabled":
+            pump_state = "normal"
+            pump_text = "Manual Override Pump OFF"
+            pump_color = "red"
+            
+            pump_button1.config(
+            text=pump_text,
+            bg=pump_color,
+            variable=pump1_state,
+            state=pump_state
+            )
+            
+            pump_button2.config(
+            text=pump_text,
+            bg=pump_color,
+            variable=pump2_state,
+            state=pump_state
+            )
+            
+        elif system_state == True:
+            pump_state = "disabled"
+            pump_text = "Manual Override Unavailable"
+            pump_color = "grey"
+            pump_button1.config(
+            text=pump_text,
+            bg=pump_color,
+            variable=motor_list[0].is_active,
+            state=pump_state
+            )
+            
+            pump_button2.config(
+            text=pump_text,
+            bg=pump_color,
+            variable=motor_list[1].is_active,
+            state=pump_state
+            )
+        gui.after(1000, update_readings)
+
     
-    #Create tab layout
-    notebook = ttk.Notebook(tools_frame)
-    notebook.grid(row=1, column=0)
-
-    #Create tab 1
-    tools_tab = tk.Frame(notebook, bg="skyblue")
-    #Add button to tab 1
-    green_button = Button(tools_tab, text="Green LED", bg="lightgrey", height=10, width=60)
-    green_button.grid(row=0, column=0)
-    red_button = Button(tools_tab, text="Red LED", bg="lightgrey", height=10, width=60)
-    red_button.grid(row=1, column=0)
-
-    #Create tab 2
-    status_tab = tk.Frame(notebook, bg="skyblue")
-
-    #Add button to tab 2
-    distance_button = Button(status_tab, text="Read Distance", bg="lightgrey", height=10, width=60)
-    distance_button.grid(row=0, column=0)
-    text_box = Text(status_tab, height=10, width=50)
-    text_box.grid(row=1, column=0,padx=3,pady=3)
-
-    #Display tab
-    notebook.add(tools_tab, text="Command")
-    notebook.add(status_tab, text="Status")
+    update_readings()
 
 def checkbutton():
     #Shutdown or turn on whole system when button is hold for 5 secs
@@ -259,6 +421,7 @@ thread_1 = threading.Thread(target=loop_maincontroller, daemon=True)
 thread_0.start()
 thread_1.start()
 
+time.sleep(2)
 configHMI()
 gui.mainloop()
 
