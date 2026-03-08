@@ -85,13 +85,14 @@ def turnmotor_off(motor_no: int):
     return
 
 def change_system_state():
-    global system_state, motor_state, motor_list
+    global system_state, motor_state, motor_list, leds
     if system_state == True:
         system_state = False
 
         for motor_no in range(len(motor_list)):
                 turnmotor_off(motor_no)
-        spi.xfer2([leds_off])
+        leds = leds_off
+        spi.xfer2([leds])
     else:
         motor_state = [True] * len(motor_list)
         system_state = True
@@ -296,7 +297,7 @@ def configHMI():
     fg="white",
     width=22,
     height=4,
-    variable=motor_list[0].is_active,
+    variable=pump1_state,
     command=toggle_pump1,
     state=pump_state
     )
