@@ -89,6 +89,10 @@ def change_system_state():
     global system_state, motor_state, motor_list
     if system_state == True:
         system_state = False
+
+        for motor_no in range(len(motor_list)):
+                turnmotor_off(motor_no)
+        spi.xfer2([leds_off])
     else:
         motor_state = [True] * len(motor_list)
         system_state = True
@@ -244,11 +248,7 @@ def loop_maincontroller():
         print(f"System state: {system_state}")
         if system_state: 
             main_controller()
-        else:
-            #Turn all components off
-            for motor_no in range(len(motor_list)):
-                turnmotor_off(motor_no)
-            spi.xfer2([leds_off])
+            
         time.sleep(2)
 
 
