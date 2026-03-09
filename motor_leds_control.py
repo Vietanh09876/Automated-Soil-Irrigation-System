@@ -166,7 +166,7 @@ def main_controller():
     for field_no in range(len(list_of_moist)):
         print(f"Moist level {list_of_moist[field_no]}")
         
-        if list_of_moist[field_no] < 500:
+        if list_of_moist[field_no] < 400:
             #if pump is already on or it is shutdown by out of runtime, dont call turnmotor_on 
             if motor_state[field_no] == False or motor_list[field_no].is_active:
                 print(f"Motor state {motor_state[field_no]}")
@@ -385,14 +385,14 @@ def configHMI():
             pump_button1.config(
             text=pump_text,
             bg=pump_color,
-            variable=motor_list[0].is_active,
+            variable=pump1_state,
             state=pump_state
             )
             
             pump_button2.config(
             text=pump_text,
             bg=pump_color,
-            variable=motor_list[1].is_active,
+            variable=pump2_state,
             state=pump_state
             )
         gui.after(1000, update_readings)
@@ -423,7 +423,7 @@ thread_0.start()
 thread_1.start()
 
 time.sleep(2)
-# configHMI()
+configHMI()
 gui.mainloop()
 
 spi.xfer2([leds_off])
