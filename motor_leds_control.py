@@ -422,7 +422,7 @@ thread_0.start()
 thread_1.start()
 
 time.sleep(2)
-configHMI()
+# configHMI()
 gui.mainloop()
 
 spi.xfer2([leds_off])
